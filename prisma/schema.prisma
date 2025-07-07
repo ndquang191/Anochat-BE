@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  gender    String?
+  age       Int?
+  lookingGender String?
+  chatMode  String
+  createdAt DateTime @default(now())
+  reports   Report[] @relation("ReportedUser")
+  reportsMade Report[] @relation("Reporter")
+}
+
+model Report {
+  id           String   @id @default(uuid())
+  reporter     User     @relation("Reporter", fields: [reporterId], references: [id])
+  reporterId   String
+  reported     User     @relation("ReportedUser", fields: [reportedId], references: [id])
+  reportedId   String
+  reason       String
+  createdAt    DateTime @default(now())
+}
