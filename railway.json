@@ -1,0 +1,8 @@
+{
+  "build": {
+    "command": "yarn build"
+  },
+  "start": {
+    "command": "yarn start:prod"
+  }
+}
