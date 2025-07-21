@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: ['*'],
+    origin: ['http://localhost:3000'],
     credentials: true,
   },
 })
@@ -42,12 +42,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { gender: string; category: string },
   ) {
     console.log(`Find partner request:`, data);
-    const partner = this.waitingQueue.find(
-      (u) => u.gender !== data.gender && u.category === data.category,
-    );
+    const partner = this.waitingQueue.find((u) => u.category === data.category);
 
     if (partner) {
       const roomId = `${socket.id}-${partner.socketId}`;
+      console.log('RoomId:', roomId);
       await socket.join(roomId);
       this.server.to(partner.socketId).socketsJoin(roomId);
 
@@ -63,6 +62,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         ...data,
       });
     }
+    console.log('Current waitingQueue:', this.waitingQueue);
   }
 
   @SubscribeMessage('send_message')
