@@ -1,9 +1,15 @@
 // src/auth/auth.module.ts
 import { Module } from '@nestjs/common';
-import { SupabaseService } from './supabase.service';
+import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
+import { AuthController } from './auth.controller';
+import { UsersModule } from '../users/users.module';
+import { auth } from './auth.config';
 
 @Module({
-  providers: [SupabaseService],
-  exports: [SupabaseService],
+  imports: [
+    BetterAuthModule.forRoot(auth), // Better Auth integration
+    UsersModule, // For custom endpoints
+  ],
+  controllers: [AuthController], // Custom endpoints
 })
 export class AuthModule {}
